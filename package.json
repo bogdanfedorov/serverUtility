@@ -1,5 +1,15 @@
 {
+  "name": "serverutility",
+  "version": "1.0.0",
+  "description": "In many projects, unnecessary libraries get added, making the code heavier and harder to maintain. That's why I've decided to use a custom set of utilities in my projects. These utilities have no dependencies and are easy to read, which greatly enhances code security.",
+  "type": "module",
+  "main": "index.js",
   "devDependencies": {
     "@biomejs/biome": "1.8.3"
-  }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bohdan Fedorov (bogdanfedorov@gmail.com)",
+  "license": "ISC"
 }
