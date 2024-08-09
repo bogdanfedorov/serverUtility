@@ -1,0 +1,15 @@
+{
+  "name": "mongodbcore",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bohdan Fedorov (bogdanfedorov@gmail.com)",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "mongodb": "^6.8.0"
+  }
+}
