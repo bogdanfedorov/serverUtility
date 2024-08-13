@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { BasePayload, DefaultHeader, SignatureSecret } from "./jwt.config";
+import { BasePayload, DefaultHeader, SignatureSecret } from "./jwt.config.js";
 
 export class JWT {
   jwtB64Header;
@@ -32,6 +32,18 @@ export class JWT {
     const jwt = new JWT(payload);
 
     return jwt.toString();
+  }
+
+  static parce(jwtString) {
+    const [header, payload] = jwtString.split(".");
+
+    const toObject = (string64) =>
+      JSON.parse(Buffer.from(string64, "base64").toString("ascii"));
+
+    return {
+      header: toObject(header),
+      payload: toObject(payload),
+    };
   }
 
   /**

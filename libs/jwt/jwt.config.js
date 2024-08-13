@@ -1,4 +1,4 @@
-import { Day } from "../time";
+import { Day } from "../time/index.js";
 
 export const DefaultHeader = {
   alg: "HS256",
