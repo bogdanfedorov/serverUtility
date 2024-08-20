@@ -1,45 +1,59 @@
 export const Model = Symbol("Model");
+export const TypeOf = Symbol("TypeOf");
 
-export class Validate {
-  static [Symbol.hasInstance](obj) {
-    var instanceClass = this;
+const determineType = (value) => {
+  if (Array.isArray(value)) return "array";
+  if (value === null) return "null";
+  return typeof value;
+};
 
-    if (!instanceClass[Model]) {
-      throw new Error("Model is not defined in the class.");
-    }
-
-    return Validate.compareObject(obj, instanceClass[Model]);
+export class Verifiable {
+  constructor(obj) {
+    Object.assign(this, obj);
   }
 
-  static compareObject(obj, model) {
-    for (const key in model) {
-      if (model[key].required && !obj.hasOwnProperty(key)) {
-        return false;
-      }
-      if (obj.hasOwnProperty(key)) {
-        var type = Validate.getType(obj[key]);
-        if (type !== model[key].type) return false;
-        if (model[key].type === "object") {
-          var result = Validate.compareObject(obj[key], model[key].value);
-          if (!result) {
-            return false;
-          }
-        }
-      }
+  static [Symbol.hasInstance](obj) {
+    const instanceClass = this;
+    const ruleGetter = Verifiable.getRuleGetter(
+      instanceClass,
+      Verifiable.compareObject,
+    );
+    const isValid = Verifiable.compareObject(
+      obj,
+      instanceClass[Model],
+      ruleGetter,
+    );
+
+    if (isValid) {
+      Object.setPrototypeOf(obj, instanceClass.prototype);
+      Object.assign(obj, new this(obj));
     }
+
+    return isValid;
+  }
+
+  static compareObject(obj, model = {}, ruleGetter) {
+    const getRule = ruleGetter(obj, model, ruleGetter);
+
+    for (const key in model) {
+      const rule = getRule(key);
+
+      if (rule.isRequired) return false;
+      if (rule.hasKey && rule.isTypeMismatch) return false;
+      if (rule.hasKey && rule.isObject && rule.isObjectInvalid) return false;
+    }
+
     return true;
   }
 
-  static getType(value) {
-    let type;
-    if (Array.isArray(value)) {
-      type = "array";
-    } else if (value === null) {
-      type = "null";
-    } else {
-      type = typeof value;
-    }
-
-    return type;
+  static getRuleGetter(Class, compareFunc) {
+    const typeOf = Class[TypeOf] || determineType;
+    return (obj, model, ruleGetter) => (key) => ({
+      isRequired: model[key].required && !obj.hasOwnProperty(key),
+      hasKey: obj.hasOwnProperty(key),
+      isTypeMismatch: typeOf(obj[key]) !== model[key].type,
+      isObject: model[key].type === "object",
+      isObjectInvalid: !compareFunc(obj[key], model[key].value, ruleGetter),
+    });
   }
 }
