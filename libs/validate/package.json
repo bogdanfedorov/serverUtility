@@ -1,0 +1,17 @@
+{
+  "name": "validate_js",
+  "version": "1.0.0",
+  "description": "this simple project for show how can wrote validation on vanilda js",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "node ./test.js",
+    "test:ts": "node ./spec/betterTS.test.js",
+    "test:validation": "node ./spec/validate.test.js"
+  },
+  "author": "Bohdan Fedorov (bogdanfedorov@gmail.com)",
+  "license": "MIT"
+}
