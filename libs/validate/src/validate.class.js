@@ -41,6 +41,8 @@ export class Verifiable {
       if (rule.isRequired) return false;
       if (rule.hasKey && rule.isTypeMismatch) return false;
       if (rule.hasKey && rule.isObject && rule.isObjectInvalid) return false;
+      if (rule.hasKey && rule.isNumber && rule.isMin) return false;
+      if (rule.hasKey && rule.isNumber && rule.isMax) return false;
     }
 
     return true;
@@ -54,6 +56,9 @@ export class Verifiable {
       isTypeMismatch: typeOf(obj[key]) !== model[key].type,
       isObject: model[key].type === "object",
       isObjectInvalid: !compareFunc(obj[key], model[key].value, ruleGetter),
+      isNumber: (model[key].type === "number") | (model[key].type === "bigint"),
+      isMin: model[key].min > obj[key],
+      isMax: model[key].max < obj[key],
     });
   }
 }
